@@ -26,7 +26,7 @@ jobs:
           echo "Deploying to IIS..."
           & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
             -source:contentPath="./publish" `
-            -dest:contentPath="C:\inetpub\wwwroot\${{ secrets.SITE_NAME }}",computerName="http://${{ secrets.SERVER_IP }}:8172/msdeploy.axd?site=${{ secrets.SITE_NAME }}",username=${{ secrets.DEPLOY_USER }},password=${{ secrets.DEPLOY_PASS }},authType="Basic" `
+            -dest:contentPath="C:\inetpub\wwwroot\${{ secrets.SITE_NAME }}",computerName="http://${{ secrets.SERVER_IP }}:8172/msdeploy.axd?site=${{ secrets.SITE_NAME }}",username=${{ secrets.DEPLOY_USER }},password=${{ secrets.DEPLOY_PASS }},authType=Basic `
             -verb:sync -allowUntrusted
         
       - name: Restart IIS
