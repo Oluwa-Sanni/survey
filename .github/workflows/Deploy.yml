@@ -1,5 +1,4 @@
 name: Deploy C# App to Windows Server
-
 on:
   push:
     branches:
@@ -8,7 +7,6 @@ on:
 jobs:
   deploy:
     runs-on: windows-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -25,10 +23,11 @@ jobs:
         run: |
           echo "Deploying to IIS..."
           & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
+            -verb:sync `
             -source:contentPath="./publish" `
             -dest:contentPath="C:\inetpub\wwwroot\${{ secrets.SITE_NAME }}",computerName="http://${{ secrets.SERVER_IP }}:8172/msdeploy.axd?site=${{ secrets.SITE_NAME }}",username="${{ secrets.DEPLOY_USER }}",password="${{ secrets.DEPLOY_PASS }}",authType=Basic `
-            -verb:sync -allowUntrusted
-        
+            -allowUntrusted
+
       - name: Restart IIS
         run: |
           echo "Restarting IIS..."
