@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .header {
+            background: #5c068c;
+            color: #ffffff;
+            padding: 15px;
+            font-size: 20px;
+            border-radius: 8px 8px 0 0;
+        }
+        .content {
+            padding: 20px;
+            font-size: 16px;
+            color: #333333;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777777;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            text-decoration: none;
+            background: #5c068c;
+            color: #ffffff;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            IPS Questionaire notification!
+        </div>
+        <div class="content">
+            <p>Hello,</p>
+            <p>We are excited to inform you that a new customer with the name <strong>{{customerName}}</strong> has just completed our our IPS questionnaire.</p>
+            <a href="https://apps.fcmbassetmanagement.com/clientadmin/login" class="btn">Go to Dashboard</a>
+        </div>
+        <div class="footer">
+            &copy;  FCMB Asset Management ltd. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+@IPS_survey_HostAddress = http://localhost:5083
+
+GET {{IPS_survey_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

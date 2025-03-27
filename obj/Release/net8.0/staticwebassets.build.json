@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "Cfe3jam75FxmDp8iwHALz0AzCkupQUvAOjG7iZsrRyM=",
+  "Source": "IPS-survey",
+  "BasePath": "_content/IPS-survey",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
