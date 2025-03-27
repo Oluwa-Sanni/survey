@@ -1,0 +1,35 @@
+name: Deploy C# App to Windows Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0'
+
+      - name: Publish Application
+        run: dotnet publish -c Release -o ./publish
+
+      - name: Deploy via Web Deploy
+        run: |
+          echo "Deploying to IIS..."
+          "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
+          -source:contentPath="./publish" `
+          -dest:contentPath="C:\inetpub\wwwroot\${{ secrets.SITE_NAME }}",computerName="http://${{ secrets.SERVER_IP }}:8172/msdeploy.axd?site=${{ secrets.SITE_NAME }}",username=${{ secrets.DEPLOY_USER }},password=${{ secrets.DEPLOY_PASS }},authType="Basic" `
+          -verb:sync -allowUntrusted
+        
+      - name: Restart IIS
+        run: |
+          echo "Restarting IIS..."
+          iisreset
