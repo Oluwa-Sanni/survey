@@ -21,13 +21,20 @@ jobs:
       - name: Publish Application
         run: dotnet publish -c Release -o ./publish
 
-      - name: Deploy via Web Deploy
+      - name: Deploy via Web Deploy    
+        env:
+          SITE_NAME: ${{ secrets.SITE_NAME }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PASS: ${{ secrets.DEPLOY_PASS }}
         run: |
-         echo "Deploying to IIS..."
-         & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
-           -source:contentPath="./publish" `
-           -dest:contentPath="C:\inetpub\wwwroot\${{ secrets.SITE_NAME }}",computerName="http://${{ secrets.SERVER_IP }}:8172/msdeploy.axd?site=${{ secrets.SITE_NAME }}",username=${{ secrets.DEPLOY_USER }},password=${{ secrets.DEPLOY_PASS }},authType="Basic" `
-           -verb:sync -allowUntrusted
+          echo "Deploying to IIS..."
+        & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
+          -source:contentPath="./publish" `
+          -dest:contentPath="C:\inetpub\wwwroot\$env:SITE_NAME",computerName="https://$env:SERVER_IP:8172/msdeploy.axd?site=$env:SITE_NAME",username=$env:DEPLOY_USER,password=$env:DEPLOY_PASS,authType=Basic `
+          -verb:sync `
+          -allowUntrusted
+
         
       - name: Restart IIS
         run: |
