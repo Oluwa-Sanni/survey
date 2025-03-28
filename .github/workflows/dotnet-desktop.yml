@@ -1,0 +1,54 @@
+name: Deploy C# App to Windows Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0'
+
+      - name: Publish Application
+        run: dotnet publish -c Release -o ./publish
+
+      - name: Deploy via Web Deploy
+        env:
+          SITE_NAME: ${{ secrets.SITE_NAME }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PASS: ${{ secrets.DEPLOY_PASS }}
+        run: |
+          echo "Deploying to IIS..."
+          $msdeployPath = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          & $msdeployPath `
+            -verb:sync `
+            -source:contentPath="./publish" `
+            -dest:contentPath="C:\inetpub\wwwroot\$env:SITE_NAME",`
+                   computerName="https://$env:SERVER_IP:8172/msdeploy.axd?site=$env:SITE_NAME",`
+                   username=$env:DEPLOY_USER,`
+                   password=$env:DEPLOY_PASS,`
+                   authType=Basic # -allowUntrusted # Consider removing this for production
+        continue-on-error: true # Allow the workflow to continue even if deployment fails
+
+      - name: Restart IIS
+        if: success() # Only restart if the deployment step was successful
+        run: |
+          echo "Restarting IIS..."
+          iisreset
+
+      - name: Deployment Failure Notification
+        if: failure() # Only run this step if the deployment failed
+        run: |
+          echo "Deployment to IIS failed!"
+          # You can add actions here to notify you of the failure, e.g., using a Slack notification action
+          # or sending an email.
