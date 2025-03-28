@@ -27,22 +27,13 @@ jobs:
           DEPLOY_PASS: ${{ secrets.DEPLOY_PASS }}
         run: |
           echo "Deploying to IIS..."
-          $msdeployPath = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
-
-          # Construct the msdeploy command with the -dest value properly quoted
-          $msdeployCommand = & $msdeployPath `
+          & "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe" `
             -verb:sync `
             -source:contentPath="./publish" `
-            -dest:"contentPath='C:\inetpub\wwwroot\$env:SITE_NAME',computerName='https://$env:SERVER_IP:8172/msdeploy.axd?site=$env:SITE_NAME',username='$env:DEPLOY_USER',password='$env:DEPLOY_PASS',authType=Basic" # -allowUntrusted # Consider removing this for production
+            -dest:contentPath="C:\inetpub\wwwroot\$env:SITE_NAME",computerName="https://$env:SERVER_IP:8172/msdeploy.axd?site=$env:SITE_NAME",username=$env:DEPLOY_USER,password=$env:DEPLOY_PASS,authType=Basic `
+            -allowUntrusted
 
-          # Log the command being executed
-          echo "Executing command: $msdeployCommand"
-
-          # Execute the command and capture output and errors
-          $result = Invoke-Expression $msdeployCommand -ErrorAction Stop
-
-          # Log the output
-          echo "MSDeploy Output:"
-          echo $result
-
-        continue-on-error: true # Allow the workflow to continue even if deployment fails
+      - name: Restart IIS
+        run: |
+          echo "Restarting IIS..."
+          iisreset
